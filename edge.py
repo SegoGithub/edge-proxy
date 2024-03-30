@@ -33,7 +33,7 @@ def response(flow: http.HTTPFlow) -> None:
                 js_name = "-".join(filter(None, url_parts[1:]))
                 with open(os.path.join(temp_dir, js_name), "wb") as f:
                     f.write(flow.response.content)
-                subprocess.run(f"npx swc {os.path.join(temp_dir, js_name)} -o {os.path.join(temp_dir, "edging-" + js_name)} --config-file {os.path.join(os.getcwd(), ".swcrc")}", shell=True)
+                subprocess.run(f'npx swc {os.path.join(temp_dir, js_name)} -o {os.path.join(temp_dir, "edging-" + js_name)} --config-file {os.path.join(os.getcwd(), ".swcrc")}', shell=True)
                 with open(os.path.join(temp_dir, "edging-" + js_name), "rb") as f:
                     flow.response.content = f.read()
 
@@ -43,7 +43,7 @@ def response(flow: http.HTTPFlow) -> None:
                 f.write(flow.response.content)
             # use environment variable cuz the shell shits itself at quotations
             os.environ["BROWSERSLIST"] = "edge 15"
-            subprocess.run(f"npx lightningcss {os.path.join(temp_dir, css_name)} -o {os.path.join(temp_dir, "edging-" + css_name)} --minify", shell=True)
+            subprocess.run(f'npx lightningcss {os.path.join(temp_dir, css_name)} -o {os.path.join(temp_dir, "edging-" + css_name)} --minify', shell=True)
             with open(os.path.join(temp_dir, "edging-" + css_name), "rb") as f:
                 flow.response.content = f.read()
         
@@ -52,7 +52,7 @@ def response(flow: http.HTTPFlow) -> None:
             img_name = "-".join(filter(None, flow.request.url.split("/")[1:-1])) + "-" + "".join(filter(None, file_name.split(".")[:-1]))
             with open(os.path.join(temp_dir, img_name + ".webp"), "wb") as f:
                 f.write(flow.response.content)
-            subprocess.run(f"magick {os.path.join(temp_dir, img_name + ".webp")} {os.path.join(temp_dir, "edging-" + img_name + ".png")}", shell=True)
+            subprocess.run(f'magick {os.path.join(temp_dir, img_name + ".webp")} {os.path.join(temp_dir, "edging-" + img_name + ".png")}', shell=True)
             with open(os.path.join(temp_dir, "edging-" + img_name + ".png"), "rb") as f:
                 flow.response.content = f.read()
             flow.response.headers["Content-Type"] = "image/png"
